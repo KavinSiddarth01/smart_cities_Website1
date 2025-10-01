@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Intelligence - Smart Cities Command Center</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-background"></div>
+        <div class="loading-content">
+            <div class="loading-logo">
+                <svg class="loading-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+            </div>
+            <h1 class="loading-title">Urban Intelligence</h1>
+            <p class="loading-subtitle">Smart Cities Command Center</p>
+            <div class="loading-bar">
+                <div class="loading-progress" id="loading-progress"></div>
+            </div>
+            <div class="loading-percentage" id="loading-percentage">0%</div>
+            <div class="loading-status" id="loading-status">Initializing sensors...</div>
+        </div>
+        <div class="loading-particles" id="loading-particles"></div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal-backdrop">
+        <div class="modal-container">
+            <div class="modal-header">
+                <button class="modal-close" id="modal-close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+                <h2 id="auth-title">Welcome Back</h2>
+                <p id="auth-subtitle">Sign in to access the command center</p>
+            </div>
+            <div class="modal-body">
+                <form id="auth-form">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/>
+                            </svg>
+                            <input type="text" id="username" placeholder="Enter your username" required>
+                        </div>
+                    </div>
+                    <div class="form-group" id="email-group">
+                        <label>Email</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                            <input type="email" id="email" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0110 0v4"/>
+                            </svg>
+                            <input type="password" id="password" placeholder="Enter your password" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <span id="auth-btn-text">Sign In</span>
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </form>
+                <div class="auth-toggle">
+                    <p>
+                        <span id="toggle-text">Don't have an account?</span>
+                        <button id="toggle-auth" class="link-button">Sign Up</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="app hidden">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-container">
+                <div class="header-content">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                            </svg>
+                        </div>
+                        <div class="logo-text">
+                            <h1>Urban Intelligence</h1>
+                            <p class="logo-subtitle">Smart Cities Command Center</p>
+                        </div>
+                    </div>
+
+                    <!-- Desktop Nav -->
+                    <div class="desktop-nav">
+                        <button id="theme-toggle" class="icon-button">
+                            <svg id="sun-icon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="5"/>
+                                <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                            </svg>
+                            <svg id="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                            </svg>
+                        </button>
+
+                        <div id="user-profile" class="user-profile hidden">
+                            <div class="user-info">
+                                <p class="user-name" id="user-name"></p>
+                                <p class="user-email" id="user-email"></p>
+                            </div>
+                            <div class="user-avatar">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/>
+                                </svg>
+                            </div>
+                            <button id="logout-btn" class="icon-button logout-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4m7 14l5-5-5-5m5 5H9"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <button id="signin-btn" class="btn-primary">Sign In</button>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn" class="mobile-menu-btn">
+                        <svg id="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 12h18M3 6h18M3 18h18"/>
+                        </svg>
+                        <svg id="close-icon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu -->
+                <div id="mobile-menu" class="mobile-menu hidden">
+                    <button id="mobile-theme-toggle" class="mobile-menu-item">
+                        <span id="mobile-theme-text">Dark Mode</span>
+                        <svg id="mobile-sun-icon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/>
+                            <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                        </svg>
+                        <svg id="mobile-moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                        </svg>
+                    </button>
+                    <div id="mobile-user-info" class="mobile-menu-item user-info-mobile hidden">
+                        <p class="user-name" id="mobile-user-name"></p>
+                        <p class="user-email" id="mobile-user-email"></p>
+                    </div>
+                    <button id="mobile-logout-btn" class="mobile-menu-item logout-mobile hidden">
+                        <span>Logout</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4m7 14l5-5-5-5m5 5H9"/>
+                        </svg>
+                    </button>
+                    <button id="mobile-signin-btn" class="mobile-menu-item signin-mobile">
+                        Sign In
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Metrics Cards -->
+            <div class="metrics-grid">
+                <div class="metric-card" style="animation-delay: 0s">
+                    <div class="metric-header">
+                        <div class="metric-icon metric-icon-blue">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                            </svg>
+                        </div>
+                        <span class="metric-badge badge-green">+12%</span>
+                    </div>
+                    <div class="metric-body">
+                        <p class="metric-label">Active Sensors</p>
+                        <p class="metric-value">1,247</p>
+                    </div>
+                </div>
+
+                <div class="metric-card" style="animation-delay: 0.1s">
+                    <div class="metric-header">
+                        <div class="metric-icon metric-icon-green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="6" width="18" height="11" rx="2"/>
+                                <path d="M7 6V4a2 2 0 012-2h6a2 2 0 012 2v2"/>
+                                <path d="M12 11v6"/>
+                            </svg>
+                        </div>
+                        <span class="metric-badge badge-green">+5%</span>
+                    </div>
+                    <div class="metric-body">
+                        <p class="metric-label">Transit Efficiency</p>
+                        <p class="metric-value">87%</p>
+                    </div>
+                </div>
+
+                <div class="metric-card" style="animation-delay: 0.2s">
+                    <div class="metric-header">
+                        <div class="metric-icon metric-icon-cyan">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1014 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2"/>
+                            </svg>
+                        </div>
+                        <span class="metric-badge badge-red">-8%</span>
+                    </div>
+                    <div class="metric-body">
+                        <p class="metric-label">Air Quality Index</p>
+                        <p class="metric-value">Good</p>
+                    </div>
+                </div>
+
+                <div class="metric-card" style="animation-delay: 0.3s">
+                    <div class="metric-header">
+                        <div class="metric-icon metric-icon-purple">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="metric-body">
+                        <p class="metric-label">Crowd Density</p>
+                        <p class="metric-value">Normal</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Anomaly Alerts -->
+            <div id="anomalies-section" class="anomalies-section">
+                <div class="section-header">
+                    <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4m0 4h.01"/>
+                    </svg>
+                    <h2>Active Anomalies</h2>
+                    <span class="anomaly-count" id="anomaly-count">3 Active</span>
+                </div>
+                <div class="anomalies-list" id="anomalies-list">
+                    <!-- Anomalies will be inserted here -->
+                </div>
+            </div>
+
+            <!-- Main Grid -->
+            <div class="main-grid">
+                <!-- City Map -->
+                <div class="city-map-section">
+                    <div class="section-header">
+                        <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 3v18h18M7 16l4-4 4 4 6-6"/>
+                        </svg>
+                        <h2>City Sensor Network</h2>
+                    </div>
+                    <div class="city-map" id="city-map">
+                        <!-- Map will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Data Feed -->
+                <div class="data-feed-section">
+                    <div class="data-feed-header">
+                        <div class="feed-title">
+                            <svg class="feed-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                            </svg>
+                            <h3>Live Data Feed</h3>
+                        </div>
+                        <span class="live-badge">Live</span>
+                    </div>
+                    <div class="data-feed-list" id="data-feed">
+                        <!-- Feed items will be inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts and Chat -->
+            <div class="charts-grid">
+                <!-- Traffic Chart -->
+                <div class="chart-section">
+                    <h3>Real-Time City Metrics</h3>
+                    <canvas id="traffic-chart"></canvas>
+                </div>
+
+                <!-- Copilot Chat -->
+                <div class="chat-section">
+                    <div class="section-header">
+                        <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                        </svg>
+                        <h2>AI Copilot Assistant</h2>
+                    </div>
+                    <div class="chat-container">
+                        <div class="chat-header">
+                            <div class="chat-header-content">
+                                <div class="chat-bot-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="11" width="18" height="10" rx="2"/>
+                                        <circle cx="12" cy="5" r="2"/>
+                                        <path d="M12 7v4m-4 0h8"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3>Urban Intelligence Copilot</h3>
+                                    <p>Real-time AI Assistant</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-messages" id="chat-messages">
+                            <!-- Messages will be inserted here -->
+                        </div>
+                        <div class="chat-input-container">
+                            <input type="text" id="chat-input" placeholder="Ask about traffic, air quality, anomalies...">
+                            <button id="chat-send" class="chat-send-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>Urban Intelligence & Smart Cities Platform</p>
+                <p class="footer-subtitle">Real-time data processing • Anomaly detection • AI-powered insights</p>
+                <p class="footer-copyright">© 2025 Urban Intelligence. Monitoring 1,247+ sensors across the city.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
